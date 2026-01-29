@@ -191,4 +191,4 @@ class TestParticipantLimits:
             "/activities/Math Club/signup?email=overflow@mergington.edu"
         )
         assert response.status_code == 400
-        assert "max participants" in response.json()["detail"].lower()
+        assert "maximum participants" in response.json()["detail"].lower()
