@@ -162,5 +162,21 @@ class TestParticipantLimits:
         max_participants = activity_data["max_participants"]
         current_participants = len(activity_data["participants"])
         
-        # Verify that current participants don't exceed max
-        assert current_participants <= max_participants
+        # Fill the activity to max capacity
+        for i in range(max_participants - current_participants):
+            email = f"participant{i}@mergington.edu"
+            response = client.post(
+                f"/activities/Math Club/signup?email={email}"
+            )
+            assert response.status_code == 200
+        
+        # Verify activity is at max capacity
+        response = client.get("/activities")
+        assert len(response.json()["Math Club"]["participants"]) == max_participants
+        
+        # Attempt to signup when at capacity
+        response = client.post(
+            "/activities/Math Club/signup?email=overflow@mergington.edu"
+        )
+        assert response.status_code == 400
+        assert "max participants" in response.json()["detail"].lower()
