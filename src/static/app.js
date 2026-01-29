@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Clear loading message
       activitiesList.innerHTML = "";
 
+      // Preserve the current selection before clearing options
+      const previousSelection = activitySelect.value;
+
       // Clear the select options (keep only the placeholder)
       while (activitySelect.options.length > 1) {
         activitySelect.remove(1);
@@ -100,6 +103,17 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = name;
         activitySelect.appendChild(option);
       });
+
+      // Restore the previous selection if it still exists
+      if (previousSelection) {
+        // Check if an option with this value exists
+        const optionExists = Array.from(activitySelect.options).some(
+          option => option.value === previousSelection
+        );
+        if (optionExists) {
+          activitySelect.value = previousSelection;
+        }
+      }
 
       // Add event listeners for delete buttons
       document.querySelectorAll(".delete-btn").forEach(button => {
